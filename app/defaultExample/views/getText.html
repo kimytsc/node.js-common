@@ -1,0 +1,13 @@
+<html>
+  <head>
+    <title><%= locals.title ? title : '' %></title>
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+  </head>
+  <body>
+	<% console.log(locals); if(locals.username){ %>
+		<h2>Welcome! <%= locals.username ? username : '' %> (name: <%= locals.name ? name : '' %>)</h2>
+	<% }else{ %>
+		<h2> Please Login. </h2>
+	<% } %>
+  </body>
+</html>

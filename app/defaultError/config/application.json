@@ -1,0 +1,11 @@
+{
+	"version": "1.0.0",
+	"encoding": "UTF-8",
+	"language": "ko-KR",
+	"session":{
+		"name" : "mySessionName",
+		"secret": "@#@$MYSIGN#@$#$",
+		"resave": "false",
+		"saveUninitialized": true
+	}
+}

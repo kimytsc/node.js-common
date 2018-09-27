@@ -1,0 +1,29 @@
+<html>
+	<head>
+		<title><%= __('index.title') %></title>
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<style>
+			h2{padding:0 0 0 20px}
+			h3{padding:0 0 0 40px}
+			div{padding:5px 0 5px 60px;white-space:pre}
+		</style>
+	</head>
+	<body>
+		<h1>출력물 예제</h1>
+		<h2>Controller</h2>
+		<h3>res</h3>
+		<div><%= 'locals : ' + JSON.stringify(locals, null, "\t") %></div>
+		<div><%= 'examVar1 : ' + examVar1  %></div>
+		<div><%= 'examVar2 : ' + examVar2  %></div>
+		<div><%= 'examVar3 : ' + JSON.stringify(examVar3, null, "\t")  %></div>
+		<h2>i18n</h2>
+		<h3>i18n 기본함수 결과</h3>
+		<div><%= '__ : ' + __('index.body') %></div>
+		<div><%= '__n : ' + __n('index.body') %></div>
+		<div><%= '__l : ' + __l('index.body') %></div>
+		<div><%= '__h : ' + JSON.stringify(__h('index.body'), null, "\t") %></div>
+		<div><%= '__mf : ' + __mf('index.body') %></div>
+		<h3>i18n __n 활용</h3>
+		<div><%= '__n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3}) : ' + __n({singular: "%s cat", plural: "%s cats", locale: "en", count: 3}) %></div>
+	</body>
+</html>

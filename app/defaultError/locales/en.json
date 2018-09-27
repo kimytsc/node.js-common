@@ -1,0 +1,12 @@
+{
+	"error": {
+		"status500": {
+			"title": "500 Error",
+			"body": "Internal Server Error"
+		},
+		"status404": {
+			"title": "404 Error",
+			"body": "Not Found"
+		}
+	}
+}

@@ -1,0 +1,31 @@
+<style>
+	input[type=text]{width:500px}
+</style>
+
+<form id="csrfForm" method="POST">
+	<input type="text" name="_csrf" value="<%= csrfToken %>">
+	<button type="submit" name="csrfOff">csrf Off</button>
+	<button type="submit" name="csrfSuccess">csrf Success</button>
+	<button type="submit" name="csrfCustomError">csrf Custom Error</button>
+	<button type="submit" name="csrfDefaultError">csrf Default Error</button>
+</form>
+
+<script>
+	(function(window, document, id){
+		var frm = document.getElementById(id);
+		frm.csrfOff.onclick = function(e){
+			frm.action = "/csrfProcessOff";
+		}
+		frm.csrfSuccess.onclick = function(e){
+			frm.action = "/csrfProcessSuccess";
+		}
+		frm.csrfCustomError.onclick = function(e){
+			frm._csrf.value = frm._csrf.value.substr(0, 1);
+			frm.action = "/csrfProcessCustomError";
+		}
+		frm.csrfDefaultError.onclick = function(e){
+			frm._csrf.value = frm._csrf.value.substr(0, 1);
+			frm.action = "/csrfProcessDefaultError";
+		}
+	})(window, document, 'csrfForm');
+</script>
