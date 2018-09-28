@@ -86,6 +86,27 @@ $ nginx -v
 nginx version: nginx/1.14.0
 $ systemctl start nginx
 $ systemctl enable nginx
+
+# MongoDB 4.0.X 설치
+$ vi /etc/yum.repos.d/mongodb-org.repo
+[mongodb-org-4.0]
+name=MongoDB Repository
+baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.0/x86_64/
+gpgcheck=1
+enabled=1
+gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
+$ yum repolist
+. . .
+repo id                          repo name
+base/7/x86_64                    CentOS-7 - Base
+extras/7/x86_64                  CentOS-7 - Extras
+mongodb-org-4.0/7                MongoDB Repository
+updates/7/x86_64                 CentOS-7 - Updates
+. . .
+$ yum install mongodb-org
+$ mongo --version
+MongoDB shell version v4.0.2
+$ systemctl start mongod
 ```
 
 ## Installing & Setup

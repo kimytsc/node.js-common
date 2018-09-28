@@ -43,7 +43,7 @@ module.exports = {
 	},
 	database:{
 		mongoose:{
-			host: "mongodb://192.168.56.231:27017,192.168.56.232:27017/", // ?replicaSet=myreplica01
+			host: "mongodb://192.168.56.231:27017,192.168.56.232:27017/", // ?replicaSet=myreplica01 // ?authSource=admin
 			opts: {
 				dbName: "dbname",
 				useNewUrlParser: true,

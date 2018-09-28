@@ -82,7 +82,7 @@ module.exports = {
 			mode: "combined",
 			opts: {
 				interval: "1d", // rotate daily
-				path: __basedir + "/log/defaultError"
+				path: __basedir + "/logs/defaultError"
 			},
 			error: {
 				file: "/error.log",
