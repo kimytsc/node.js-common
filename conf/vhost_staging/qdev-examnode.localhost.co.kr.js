@@ -41,21 +41,22 @@ module.exports = {
 		// 	key: fs.readFileSync(__basedir + '/app/localhost.com.key')
 		// }
 	},
-	database:{
-		mongoose:{
-			host: "mongodb://192.168.56.231:27017,192.168.56.232:27017/", // ?replicaSet=myreplica01
-			opts: {
-				dbName: "dbname",
-				useNewUrlParser: true,
-				keepAlive: true,
-				keepAliveInitialDelay: 2000, // milliseconds
-				// readPreference: "secondaryPreferred", // use slave only
-				autoReconnect: true,
-				reconnectTries: Number.MAX_VALUE,
-				reconnectInterval: 3000
-			}
-		}
-	},
+	// database: {
+	// 	mongoose: {
+	// 		type: "mongodb",
+	// 		host: "mongodb://192.168.56.231:27017,192.168.56.232:27017/", // ?replicaSet=myreplica01
+	// 		opts: {
+	// 			dbName: "dbname",
+	// 			useNewUrlParser: true,
+	// 			keepAlive: true,
+	// 			keepAliveInitialDelay: 2000, // milliseconds
+	// 			// readPreference: "secondaryPreferred", // use slave only
+	// 			autoReconnect: true,
+	// 			reconnectTries: Number.MAX_VALUE,
+	// 			reconnectInterval: 3000
+	// 		}
+	// 	}
+	// },
 	i18n: {
 		cookie: 'lang', // 쿠키의 이름 설정, 개발자가 자유롭게 이름 설정가능
 		locales:['ko', 'en'], // 사용언어 설정 / 'de' 나 'ja' , 'fr' 등등 추가 가능

@@ -1,6 +1,6 @@
 /**
- * @file	db.mongo.dymlogger.js
- * @brief	Database setup
+ * @file	database.mongo.js
+ * @brief	MongoDB setup
  * @version	1.0
  * @author	김용태 (kimytsc@gmail.com)
  * 
@@ -10,11 +10,9 @@
 'use strict';
 
 const mongoose = require("mongoose");
-const dbhost = myApp.get(__dirname).database.mongoose.host;
-const dbopts = myApp.get(__dirname).database.mongoose.opts
 
-module.exports = () => {
-	mongoose.connect(dbhost, dbopts);
+module.exports = (dbInfo) => {
+	mongoose.connect(dbInfo.host, dbInfo.opts);
 
 	mongoose.Promise = Promise; // yea... this is kinda odd 
 
@@ -47,8 +45,8 @@ module.exports = () => {
 	mongoose.connection.on("disconnected", () => {
 		// console.log("Connection Disconnected");
 		setTimeout(function(){
-			mongoose.connect(dbhost, dbopts);
-		}, dbopts.reconnectInterval);
+			mongoose.connect(dbInfo.host, dbInfo.opts);
+		}, (dbInfo.opts && dbInfo.opts.reconnectInterval) || 2000);
 	});
 
 	// mongoose.connection.on("close", () => {
@@ -114,7 +112,7 @@ module.exports = () => {
 			}
 		}
 	}
-	setInterval(PingPong.ping, dbopts.keepAliveInitialDelay);
+	setInterval(PingPong.ping, (dbInfo.opts && dbInfo.opts.keepAliveInitialDelay) || 2000);
 	// PingPong setup End
 
 	return mongoose;

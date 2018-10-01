@@ -21,7 +21,7 @@ module.exports = {
 			watch: ["app", "conf", "utils"],
 			ignore_watch : ["node_modules", "log"],
 			watch_options: {
-			  "followSymlinks": false
+				"followSymlinks": false
 			},
 			exec_mode: "cluster",
 			instances: 0,
