@@ -1,0 +1,1 @@
+docker run -it --name mynode-test -d -v /workspace:/mnt/workspace mynode:1.0
