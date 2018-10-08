@@ -1,1 +1,1 @@
-docker build -t mynode:1.0 ./
+docker build -t node-pm2-docker:1.0 ./
