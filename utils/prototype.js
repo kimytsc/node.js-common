@@ -10,14 +10,14 @@ String.prototype.lpad = function(padLength, padString){
 	var s = this;
 	while(s.length < padLength)
 		s = padString + s;
-	return s;
+	return s
 }
  
 String.prototype.rpad = function(padLength, padString){
 	var s = this;
 	while(s.length < padLength)
 		s += padString;
-	return s;
+	return s
 }
 
 Number.prototype.in_array = 
@@ -25,8 +25,8 @@ String.prototype.in_array = function(arr){
 	var s = this;
 	arr = arr || [];
 	return arr.some(function(el){
-		return el == s;
-	});
+		return el == s
+	})
 }
 
 String.prototype.parsePathname = function(){
@@ -40,6 +40,24 @@ String.prototype.parsePathname = function(){
 		ext: fname.pop(),
 		name: fname.join('.')
 	}
+}
+
+String.prototype.trim = function(){
+	var s = this;
+	return s?s.replace(/^\s+|\s+$/gm,''):s
+}
+
+String.prototype.ltrim = function(){
+	return s?s.replace(/^\s+/,''):s
+}
+
+String.prototype.rtrim = function(){
+	return s?s.replace(/\s+$/,''):s
+}
+
+// https://davidwalsh.name/javascript-clone-array
+Array.prototype.clone = function(){
+	return this.slice(0)
 }
 
 // Object.prototype.join 사용하면 에러남
