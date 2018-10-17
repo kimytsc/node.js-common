@@ -73,6 +73,102 @@ Array.prototype.clone = function(){
 // 	return arr.join(separator)
 // }
 
+// https://code.i-harness.com/en/q/46eb89
+Object.defineProperty(
+    Object.prototype, 
+    'renameProperty',
+    {
+        writable : false, // Cannot alter this property
+        enumerable : false, // Will not show up in a for-in loop.
+        configurable : false, // Cannot be deleted via the delete operator
+        value : function (oldName, newName) {
+            // Do nothing if the names are the same
+            if (oldName == newName) {
+                return this;
+            }
+            // Check for the old property name to 
+            // avoid a ReferenceError in strict mode.
+            if (this.hasOwnProperty(oldName)) {
+                this[newName] = this[oldName];
+                delete this[oldName];
+            }
+            return this;
+        }
+    }
+);
+
+// MongoDB not allowing using '.' in key [duplicate]
+// https://stackoverflow.com/questions/28664383/mongodb-not-allowing-using-in-key
+Object.defineProperty(
+    Object.prototype, 
+    'dotProperty',
+    {
+        writable : false, // Cannot alter this property
+        enumerable : false, // Will not show up in a for-in loop.
+        configurable : false, // Cannot be deleted via the delete operator
+        value : function (obj) {
+			var newName;
+			obj = obj || this;
+
+			for(let oldName in obj){
+				if (this.hasOwnProperty(oldName)){
+					if(this[oldName].constructor === Object){
+						this[oldName].dotProperty()
+					}else{
+						newName = oldName;
+						if(newName.search('\\.') !== -1){
+							newName = newName.replace(/\./g, "\uFF0E");
+						}
+						if(newName.search('\\$') !== -1){
+							newName = newName.replace(/\$/g, "\uFF04")
+						}
+						if(newName !== oldName){
+							this[newName] = this[oldName];
+							delete this[oldName];
+						}
+					}
+				}
+			}
+            return this;
+        }
+    }
+);
+
+Object.defineProperty(
+    Object.prototype, 
+    'undotProperty',
+    {
+        writable : false, // Cannot alter this property
+        enumerable : false, // Will not show up in a for-in loop.
+        configurable : false, // Cannot be deleted via the delete operator
+        value : function (obj) {
+			var newName;
+			obj = obj || this;
+
+			for(let oldName in obj){
+				if (this.hasOwnProperty(oldName)){
+					if(this[oldName].constructor === Object){
+						this[oldName].undotProperty()
+					}else{
+						newName = oldName;
+						if(newName.search('\uFF0E') !== -1){
+							newName = newName.replace(/\uFF0E/g, "\.");
+						}
+						if(newName.search('\uFF04') !== -1){
+							newName = newName.replace(/\uFF04/g, "\$")
+						}
+						if(newName !== oldName){
+							this[newName] = this[oldName];
+							delete this[oldName];
+						}
+					}
+				}
+			}
+            return this;
+        }
+    }
+);
+
 Date.prototype.date = function(idx, charset){
 	var	charset = charset || 'eng',
 		now = this instanceof Date ? this : new Date();

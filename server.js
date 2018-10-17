@@ -48,15 +48,19 @@ config.virtualHost.forEach(function($_SERVER){
 config.http.server.forEach(function(apps, port){
 	const inServer = express();
 
+	var hostList = [];
 	apps.forEach(function($_SERVER){
 		$_SERVER.HTTP_HOSTS.forEach(function(hostname){
+			hostList.push(hostname);
 			inServer.use(vhost(hostname, config.apps[$_SERVER.SCRIPT_FILENAME]));
 		});
 	});
 	inServer.use(config.apps.defaultError);
 
 	inServer.timeout = config.http.timeout;
-	inServer.listen(port);
+	inServer.listen(port, function(){
+		console.log(hostList.join(', ') + ' is Ready!');
+	});
 });
 
 config.https.server.forEach(function(apps, port){

@@ -1,0 +1,3 @@
+FROM mongo:4.0.2
+
+RUN ln -s /mnt/workspace/database/mongo /data/db

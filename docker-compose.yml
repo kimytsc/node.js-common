@@ -1,0 +1,105 @@
+# https://gompro.postype.com/post/1735800
+# https://gloriajun.github.io/devops/2017/12/20/docker-mongodb.html
+# https://docs.docker.com/compose/compose-file/#volumes
+version: '3.2'
+
+services:
+  nginx:
+    container_name: nginx
+    # image: nginx:1.14.0
+    restart: always
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile.nginx
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - backend
+    volumes:
+      - /workspace:/mnt/workspace
+
+  # redis:
+  #   container_name: redis
+  #   image: redis:4.0.8-alpine
+  #   restart: always
+  #   ports:
+  #     - 6379:6379
+  #   volumes:
+  #     - /workspace/redis:/data/redis
+  #   networks:
+  #     - backend
+
+  mongo:
+    container_name: mongo
+    # image: mongo:4.0.2
+    restart: always
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile.mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      # auth: 
+      # bind_ip: 0.0.0.0
+    ports:
+      - 27017:27017
+    volumes:
+      - /workspace:/mnt/workspace
+    networks:
+      - backend
+
+  # mongo-express:
+  #   image: mongo-express
+  #   restart: always
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
+  #   links:
+  #     - mongo
+
+  nodejs:
+    container_name: nodejs
+    # image: node:10.8.0
+    restart: always
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.nodejs
+    ports:
+      - 3000:3000
+      - 3443:3443
+    volumes:
+      - /workspace:/mnt/workspace
+    networks:
+      - backend
+    links:
+      - mongo
+      - nginx
+    depends_on:
+      - mongo
+
+  # cenode:
+  #   container_name: cenode
+  #   # image: centos:7.5.1804 + node:10.8.0
+  #   restart: always
+  #   build:
+  #     context: ./docker
+  #     dockerfile: Dockerfile.centos
+  #   ports:
+  #     - 3000:3000
+  #     - 3443:3443
+  #   volumes:
+  #     - /workspace:/mnt/workspace
+  #   networks:
+  #     - backend
+  #   links:
+  #     - mongo
+  #     - nginx
+  #   depends_on:
+  #     - mongo
+
+networks:
+  backend:
+    driver: bridge

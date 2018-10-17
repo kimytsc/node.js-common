@@ -22,8 +22,6 @@ myApp.set(__dirname, (function(appRoot){
 })(__dirname));
 
 const extLoader = require(myApp.get(__dirname).utilsRoot + '/extLoader');
-// extLoader(myApp.get(__dirname).appRoot + '/config', ['.json']).forEach(function(element){global[element.parsePathname().name] = require(element)}); // Environment setup
-// require(__basedir + '/utils/database.mongo')(myApp.get(__dirname).database.mongoose); // MongoDB connection
 extLoader(myApp.get(__dirname).middlewareRoot, ['.js']).forEach(function(element){myApp.set(__dirname, {middleware:{[element.parsePathname().name]: require(element)(app)}})}); // Middleware setup
 
 // Language setup Start

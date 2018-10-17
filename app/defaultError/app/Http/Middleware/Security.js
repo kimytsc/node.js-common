@@ -7,6 +7,7 @@
  * https://www.slideshare.net/deepusnath/node-security-42338708
  * https://blog.risingstack.com/node-js-security-checklist/
  * https://blog.naver.com/cck223/220971892608
+ * http://new93helloworld.tistory.com/42
  */
 'use strict'
 
@@ -21,9 +22,8 @@ module.exports = (app) => {
 	app.use(cookieParser());
 
 	// post 값 파싱을 위한 설정 Start
-	// http://new93helloworld.tistory.com/42
+	app.use(bodyParser.urlencoded({extended : false}));
 	app.use(bodyParser.json());
-	app.use(bodyParser.urlencoded({extended : true}));
 	// post 값 파싱을 위한 설정 End
 
 	// SQL Injection Start
