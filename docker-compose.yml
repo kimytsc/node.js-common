@@ -5,38 +5,42 @@ version: '3.2'
 
 services:
   nginx:
-    container_name: nginx
-    # image: nginx:1.14.0
+    container_name: Nginx
     restart: always
     build: 
-      context: ./docker
-      dockerfile: Dockerfile.nginx
+      context: ./docker/Nginx
+      dockerfile: Dockerfile
     ports:
       - 80:80
       - 443:443
-    networks:
-      - backend
     volumes:
       - /workspace:/mnt/workspace
+      - /workspace/nodejs/myapp/docker/Nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /workspace/nodejs/myapp/docker/Nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - backend
 
-  # redis:
-  #   container_name: redis
-  #   image: redis:4.0.8-alpine
-  #   restart: always
-  #   ports:
-  #     - 6379:6379
-  #   volumes:
-  #     - /workspace/redis:/data/redis
-  #   networks:
-  #     - backend
-
-  mongo:
-    container_name: mongo
-    # image: mongo:4.0.2
+  redis:
+    container_name: Redis
     restart: always
     build: 
-      context: ./docker
-      dockerfile: Dockerfile.mongodb
+      context: ./docker/Redis
+      dockerfile: Dockerfile
+    ports:
+      - 6379:6379
+    volumes:
+      - /workspace:/mnt/workspace
+      - /workspace/volumes/redis:/data/redis
+      # - redisdata:/data/redis
+    networks:
+      - backend
+
+  mongo:
+    container_name: Mongo
+    restart: always
+    build: 
+      context: ./docker/MongoDB
+      dockerfile: Dockerfile
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -46,27 +50,43 @@ services:
       - 27017:27017
     volumes:
       - /workspace:/mnt/workspace
+      # - /workspace/volumes/mongo:/data/db
+      - mongodbdata:/data/db
     networks:
       - backend
 
-  # mongo-express:
-  #   image: mongo-express
-  #   restart: always
-  #   ports:
-  #     - 8081:8081
-  #   environment:
-  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
-  #     ME_CONFIG_MONGODB_ADMINPASSWORD: example
-  #   links:
-  #     - mongo
+  # https://docs.docker.com/samples/library/mongo-express
+  mongo-express:
+    container_name: Mongo-Express
+    restart: always
+    build: 
+      context: ./docker/Mongo-Express
+      dockerfile: Dockerfile
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_OPTIONS_EDITORTHEME: ambiance
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+    ports:
+      - 8081:8081
+    volumes:
+      - /workspace:/mnt/workspace
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    networks:
+      - backend
 
-  nodejs:
-    container_name: nodejs
-    # image: node:10.8.0
+  application:
+    container_name: Application
     restart: always
     build:
-      context: ./docker
-      dockerfile: Dockerfile.nodejs
+      context: ./docker/Application/Node.JS # node:10.8.0
+      # context: ./docker/Application/CentOS # centos:7.5.1804 + node:10.8.0
+      dockerfile: Dockerfile
     ports:
       - 3000:3000
       - 3443:3443
@@ -77,29 +97,16 @@ services:
     links:
       - mongo
       - nginx
+      - redis
     depends_on:
       - mongo
-
-  # cenode:
-  #   container_name: cenode
-  #   # image: centos:7.5.1804 + node:10.8.0
-  #   restart: always
-  #   build:
-  #     context: ./docker
-  #     dockerfile: Dockerfile.centos
-  #   ports:
-  #     - 3000:3000
-  #     - 3443:3443
-  #   volumes:
-  #     - /workspace:/mnt/workspace
-  #   networks:
-  #     - backend
-  #   links:
-  #     - mongo
-  #     - nginx
-  #   depends_on:
-  #     - mongo
+      - nginx
+      - redis
 
 networks:
   backend:
     driver: bridge
+
+volumes:
+  mongodbdata:
+  redisdata:

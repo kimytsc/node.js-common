@@ -51,7 +51,6 @@ module.exports = {
 			instances: 0,
 			env: {
 				// 공통변수로 적용될 설정 지정
-				NODE_APP_INSTANCE: '', // 값이 있으면, conf/default-{NODE_APP_INSTANCE}.js 파일을 읽어옴
 				NODE_ENV: "development" // NODE_ENV=development (Default)
 			},
 			env_development: {

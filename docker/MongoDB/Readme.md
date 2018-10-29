@@ -1,0 +1,1 @@
+mongo --authenticationDatabase admin -u root -p example
