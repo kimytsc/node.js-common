@@ -11,6 +11,8 @@
  * http://blog.msalt.net/225
  * https://blog.outsider.ne.kr/1197
  * https://futurestud.io/tutorials/pm2-advanced-app-configuration-with-json-file
+ * https://fkkmemi.github.io/nembv/nembv-21-deploy-web
+ * https://ygamretuta.xyz/deploy-create-react-app-with-pm2-16beb90ce52
  */
 'use strict';
 
@@ -40,7 +42,7 @@
 module.exports = {
 	apps: [
 		{
-			name: "DYM-Logger", // pm2로 실행한 프로세스 목록에서 이 애플리케이션의 이름으로 지정될 문자열
+			name: "ExamNode", // pm2로 실행한 프로세스 목록에서 이 애플리케이션의 이름으로 지정될 문자열
 			script: "./server.js", // pm2로 실행될 파일 경로
 			watch: ["app", "conf", "utils"],
 			ignore_watch : ["node_modules", "logs"],
@@ -69,5 +71,90 @@ module.exports = {
 				NODE_ENV: "production"
 			}
 		}
-	]
+	],
+	// Deployment part
+	// Here you describe each environment
+	deploy: {
+		development: {
+			host: [{
+				host: "192.168.56.211",
+				port: "1980",
+				user: "username",
+				key: "/mnt/workspace/deploy/key/path"
+			}],
+			ref: "origin/dev",
+			repo: "https://github.com/kimytsc/node.js-common",
+			path: "/mnt/workspace/nodejs/myapp",
+			// key: "/mnt/workspace/deploy/key/path",
+			ssh_options: ["StrictHostKeyChecking=no"],
+			"post-deploy": "pm2 startOrRestart ecosystem.config.js --env development",
+			env: {
+				NODE_ENV: "development"
+			}
+		},
+		staging: {
+			host: [{
+				host: "192.168.56.211",
+				port: "1980",
+				user: "username",
+				key: "/mnt/workspace/deploy/key/path"
+			},{
+				host: "192.168.56.212",
+				port: "1980",
+				user: "username",
+				key: "/mnt/workspace/deploy/key/path"
+			}],
+			ref: "origin/dev",
+			repo: "https://github.com/kimytsc/node.js-common",
+			path: "/mnt/workspace/nodejs/myapp",
+			ssh_options: ["StrictHostKeyChecking=no"],
+			"post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js --env staging",
+			env: {
+				NODE_ENV: "staging"
+			}
+		},
+		production: {
+			// Multi host is possible, just by passing IPs/hostname as an array
+			host: [{
+				host: "192.168.56.211",
+				port: "1980",
+				user: "username",
+				key: "/mnt/workspace/deploy/key/path"
+			},{
+				host: "192.168.56.212",
+				port: "1980",
+				user: "username",
+				key: "/mnt/workspace/deploy/key/path"
+			}],
+			// Branch
+			ref : "origin/master",
+			// Git repository to clone
+			repo: "https://github.com/kimytsc/node.js-common",
+			// Path of the application on target servers
+			path: "/mnt/workspace/nodejs/myapp",
+			// Can be used to give options in the format used in the configura-
+			// tion file.  This is useful for specifying options for which there
+			// is no separate command-line flag, see 'man ssh' 
+			// can be either a single string or an array of strings
+			ssh_options: ["StrictHostKeyChecking=no"],
+			// To prepare the host by installing required software (eg: git) 
+			// even before the setup process starts
+			// can be multiple commands separated by the character ";"
+			// or path to a script on your local machine
+			// "pre-setup": "apt-get install git",
+			// Commands / path to a script on the host machine
+			// This will be executed on the host after cloning the repository
+			// eg: placing configurations in the shared dir etc
+			// "post-setup": "ls -la",
+			// Commands to execute locally (on the same machine you deploy things)
+			// Can be multiple commands separated by the character ";"
+			// "pre-deploy-local": "echo 'This is a local executed command'",
+			// Commands to be executed on the server after the repo has been cloned
+			"post-deploy": "npm install && pm2 startOrRestart ecosystem.config.js --env production",
+			// Environment variables that must be injected in all applications on this env
+			env: {
+				NODE_ENV: "production"
+			}
+		}
+	}
 };
