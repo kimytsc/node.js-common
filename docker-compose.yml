@@ -15,10 +15,19 @@ services:
       - 443:443
     volumes:
       - /workspace:/mnt/workspace
-      - /workspace/nodejs/myapp/docker/Nginx/nginx.conf:/etc/nginx/nginx.conf
-      - /workspace/nodejs/myapp/docker/Nginx/conf.d:/etc/nginx/conf.d
+      - /workspace/node.js-common/docker/Nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /workspace/node.js-common/docker/Nginx/conf.d:/etc/nginx/conf.d
+      - /workspace/node.js-common/docker/Nginx/keys:/etc/nginx/keys
     networks:
       - backend
+    links:
+      - laravel
+      - examnode
+      - mongo-express
+    depends_on:
+      - laravel
+      - examnode
+      - mongo-express
 
   redis:
     container_name: Redis
@@ -26,8 +35,6 @@ services:
     build: 
       context: ./docker/Redis
       dockerfile: Dockerfile
-    ports:
-      - 6379:6379
     volumes:
       - /workspace:/mnt/workspace
       - /workspace/volumes/redis:/data/redis
@@ -46,8 +53,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
       # auth: 
       # bind_ip: 0.0.0.0
-    ports:
-      - 27017:27017
     volumes:
       - /workspace:/mnt/workspace
       # - /workspace/volumes/mongo:/data/db
@@ -69,8 +74,6 @@ services:
       ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-    ports:
-      - 8081:8081
     volumes:
       - /workspace:/mnt/workspace
     links:
@@ -80,33 +83,54 @@ services:
     networks:
       - backend
 
-  application:
-    container_name: Application
+  laravel:
+    container_name: "DYM-5"
     restart: always
     build:
-      context: ./docker/Application/Node.JS # node:10.8.0
-      # context: ./docker/Application/CentOS # centos:7.5.1804 + node:10.8.0
+      context: ./Application/laravel/Laradock
       dockerfile: Dockerfile
-    ports:
-      - 3000:3000
-      - 3443:3443
+      args:
+        LARADOCK_PHP_VERSION: "7.0"
+        INSTALL_ZIP_ARCHIVE: "true"
+        INSTALL_PHPREDIS: "true"
+        INSTALL_MYSQLI: "true"
+        INSTALL_INTL: "true"
+    volumes:
+      - /workspace:/mnt/workspace
+      - /workspace/laravel:/var/www
+      - /workspace/node.js-common/docker/Application/laravel/Laradock/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - /workspace/node.js-common/docker/Application/laravel/Laradock/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini
+      - /workspace/node.js-common/docker/Application/laravel/Laradock/laravel.ini:/usr/local/etc/php/conf.d/laravel.ini
+      - /workspace/node.js-common/docker/Application/laravel/Laradock/xlaravel.pool.conf:/usr/local/etc/php-fpm.d/xlaravel.pool.conf
+    networks:
+      - backend
+
+  examnode:
+    container_name: examnode
+    restart: always
+    build:
+      context: ./docker/Application/examnode/Node.JS # node:10.8.0
+      # context: ./docker/Application/examnode/CentOS # centos:7.5.1804 + node:10.8.0
+      dockerfile: Dockerfile
     volumes:
       - /workspace:/mnt/workspace
     networks:
       - backend
     links:
       - mongo
-      - nginx
       - redis
     depends_on:
       - mongo
-      - nginx
       - redis
 
 networks:
+  # frontend:
+  #   driver: bridge
   backend:
     driver: bridge
 
 volumes:
   mongodbdata:
+    driver: local
   redisdata:
+    driver: local
